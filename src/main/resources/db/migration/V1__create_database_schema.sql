@@ -1,6 +1,5 @@
-CREATE TABLE users
+CREATE TABLE cards
 (
     id            SERIAL PRIMARY KEY,
-    username      VARCHAR(20) NOT NULL,
-    pawssword     VARCHAR(20) NOT NULL
+    card_number   VARCHAR NOT NULL
 );

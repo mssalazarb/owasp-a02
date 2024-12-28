@@ -16,6 +16,13 @@ public class CreditCardRepositoryImpl implements CreditCardRepository {
     private final ObjectMapper mapper;
 
     @Override
+    public CreditCard save(CreditCard creditCard) {
+        CreditCardEntity creditCardEntity = this.jpaCreditCardRepository.save(mapper.convertValue(creditCard, CreditCardEntity.class));
+
+        return mapper.convertValue(creditCardEntity, CreditCard.class);
+    }
+
+    @Override
     public CreditCard findCreditCardById(Long id) {
         Optional< CreditCardEntity> creditCardEntity = this.jpaCreditCardRepository.findCreditCardById(id);
 

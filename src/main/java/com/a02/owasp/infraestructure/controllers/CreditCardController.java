@@ -4,10 +4,7 @@ import com.a02.owasp.domain.model.CreditCard;
 import com.a02.owasp.domain.ports.in.EncryptionService;
 import com.a02.owasp.domain.ports.out.CreditCardRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,10 +14,23 @@ public class CreditCardController {
     private final CreditCardRepository creditCardRepository;
     private final EncryptionService encryptionService;
 
-    @GetMapping("/creditCard")
-    public String getCreditCard(@RequestParam Long id) throws Exception {
-        CreditCard creditCard = this.creditCardRepository.findCreditCardById(id);
+    @PostMapping
+    public String saveCreditCard(@RequestBody CreditCard card) throws Exception {
+        CreditCard otherCreditCard = card;
+        card.setCardNumber(encryptionService.encrypt(card.getCardNumber()));
+        CreditCard creditCard = this.creditCardRepository.save(card);
+
+        otherCreditCard.setCardNumber(encryptionService.encrypt(otherCreditCard.getCardNumber()));
+        this.creditCardRepository.save(otherCreditCard);
 
         return this.encryptionService.decrypt(creditCard.getCardNumber());
+    }
+
+    @GetMapping
+    public CreditCard getCreditCard(@RequestParam Long id) throws Exception {
+        CreditCard creditCard = this.creditCardRepository.findCreditCardById(id);
+        creditCard.setCardNumber(this.encryptionService.decrypt(creditCard.getCardNumber()));
+
+        return  creditCard;
     }
 }
