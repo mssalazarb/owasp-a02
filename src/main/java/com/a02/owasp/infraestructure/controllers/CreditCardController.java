@@ -16,12 +16,8 @@ public class CreditCardController {
 
     @PostMapping
     public String saveCreditCard(@RequestBody CreditCard card) throws Exception {
-        CreditCard otherCreditCard = card;
         card.setCardNumber(encryptionService.encrypt(card.getCardNumber()));
         CreditCard creditCard = this.creditCardRepository.save(card);
-
-        otherCreditCard.setCardNumber(encryptionService.encrypt(otherCreditCard.getCardNumber()));
-        this.creditCardRepository.save(otherCreditCard);
 
         return this.encryptionService.decrypt(creditCard.getCardNumber());
     }
