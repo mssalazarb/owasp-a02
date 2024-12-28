@@ -25,17 +25,15 @@ public class CreditCardController {
     }
 
     @GetMapping
-    public List<CreditCard> getCreditCard(@RequestParam String cardNumber) {
-        List<CreditCard> creditCards = this.creditCardRepository.findCreditCardByCard(cardNumber);
-        creditCards.forEach(creditCard -> {
-            try {
-                creditCard
-                        .setCardNumber(this.encryptionService.decrypt(creditCard.getCardNumber()));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
+    public CreditCard getCreditCard(@RequestParam Long id) {
+        CreditCard creditCard = this.creditCardRepository.findCreditCardByCard(id);
+        try {
+            creditCard
+                    .setCardNumber(this.encryptionService.decrypt(creditCard.getCardNumber()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-        return  creditCards;
+        return  creditCard;
     }
 }

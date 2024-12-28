@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class CreditCardRepositoryImpl implements CreditCardRepository {
@@ -23,9 +24,9 @@ public class CreditCardRepositoryImpl implements CreditCardRepository {
     }
 
     @Override
-    public List<CreditCard> findCreditCardByCard(String cardNumber) {
-        List<CreditCardEntity> creditCards = this.jpaCreditCardRepository.findCreditCardByCard(cardNumber);
+    public CreditCard findCreditCardByCard(Long id) {
+        Optional<CreditCardEntity> creditCard = this.jpaCreditCardRepository.findCreditCardByCard(id);
 
-        return creditCards.stream().map( creditCard -> mapper.convertValue(creditCard, CreditCard.class)).toList();
+        return mapper.convertValue(creditCard, CreditCard.class);
     }
 }
