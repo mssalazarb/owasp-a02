@@ -7,7 +7,7 @@ import com.a02.owasp.infraestructure.database.repositories.JpaCreditCardReposito
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Optional;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class CreditCardRepositoryImpl implements CreditCardRepository {
@@ -23,9 +23,9 @@ public class CreditCardRepositoryImpl implements CreditCardRepository {
     }
 
     @Override
-    public CreditCard findCreditCardById(Long id) {
-        Optional< CreditCardEntity> creditCardEntity = this.jpaCreditCardRepository.findCreditCardById(id);
+    public List<CreditCard> findCreditCardByCard(String cardNumber) {
+        List<CreditCardEntity> creditCards = this.jpaCreditCardRepository.findCreditCardByCard(cardNumber);
 
-        return creditCardEntity.map( creditCard -> mapper.convertValue(creditCard, CreditCard.class)).orElse(null);
+        return creditCards.stream().map( creditCard -> mapper.convertValue(creditCard, CreditCard.class)).toList();
     }
 }

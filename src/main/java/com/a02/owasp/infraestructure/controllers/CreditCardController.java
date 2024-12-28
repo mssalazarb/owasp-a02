@@ -6,6 +6,8 @@ import com.a02.owasp.domain.ports.out.CreditCardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/card")
@@ -23,10 +25,17 @@ public class CreditCardController {
     }
 
     @GetMapping
-    public CreditCard getCreditCard(@RequestParam Long id) throws Exception {
-        CreditCard creditCard = this.creditCardRepository.findCreditCardById(id);
-        creditCard.setCardNumber(this.encryptionService.decrypt(creditCard.getCardNumber()));
+    public List<CreditCard> getCreditCard(@RequestParam String cardNumber) {
+        List<CreditCard> creditCards = this.creditCardRepository.findCreditCardByCard(cardNumber);
+        creditCards.forEach(creditCard -> {
+            try {
+                creditCard
+                        .setCardNumber(this.encryptionService.decrypt(creditCard.getCardNumber()));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
 
-        return  creditCard;
+        return  creditCards;
     }
 }
